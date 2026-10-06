@@ -1,0 +1,22 @@
+--  SPARK-proven 1-D advection and inviscid Burgers kernels (spec-only units:
+--  every subprogram is an expression function, so there is nothing to bind or
+--  link; the deliverable is the proof).
+--
+--  Prove:  gnatprove -P pde_kernels.gpr --level=2 --report=all -j4
+--  (gnatprove FSF 15.0; see README.md).
+project PDE_Kernels is
+
+   for Source_Dirs use ("src/advection_1d", "src/burgers_1d");
+   for Object_Dir use "obj";
+
+   package Compiler is
+      --  -gnat2022 -gnatU -gnata are the switches every unit was proved with.
+      --  -ffp-contract=off: the proofs model ONE rounding per operation. If you
+      --  compile these units into an executable, keep this flag, or GCC may fuse
+      --  a*b+c into an FMA and the binary no longer matches what was proved.
+      --  (gnatprove itself ignores it.)
+      for Default_Switches ("Ada") use
+        ("-gnat2022", "-gnatU", "-gnata", "-ffp-contract=off");
+   end Compiler;
+
+end PDE_Kernels;
